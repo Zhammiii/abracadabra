@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = 3000;
-const nombres = ['Samantha', 'Daniela' ,'Alfonso', 'Olga' ,'Jorge'];
+const nombres = ['Samantha', 'Daniela' ,'Alfonso', 'Olga' ,'Jorge', 'Luis'];
 
 /*  json con usuarios y sus nombres */ 
 app.get('/abracadabra/usuarios', (req, res) => {
@@ -14,25 +14,21 @@ app.use(express.static("public"));
 
 /* Validacion */
 
-app.use("/abracadabra/juego/:usuario", (req, res) => {
+const validar = (req, res, next) => {
   let usuario = req.params.usuario;
   let encontrado = nombres.includes(usuario);
-  
   if (encontrado) {
-    res.sendFile(__dirname + "/public/juego.html");
+    next(); 
   } else {
-    res.send('<img src="/assets/img/who.jpeg">');
+    res.send('<img src="/assets/img/who.jpeg">'); 
   }
+};
+
+/* Ruta para el juego */
+app.get('/abracadabra/juego/:usuario', validar, (req, res) => {
+  res.sendFile(__dirname + '/public/juego.html');
 });
 
-/*  let usuarioExistente = nombres.find((user) => user.nombre === usuario);
-if (usuarioExistente) {
-  req.loggedUser = usuarioExistente;
-  next();
-} else {
-  res.status(401).send("🛑📛❌ No tienes autorización, sitio restringido ⭕🚫⛔");
-}
-}); */
 
 /* Logica del juego */
 app.get("/abracadabra/conejo/:n", (req, res) => {
